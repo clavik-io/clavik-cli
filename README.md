@@ -26,8 +26,15 @@ curl -sSL -o clavik https://github.com/clavik-io/clavik-cli/releases/latest/down
 chmod +x clavik && sudo mv clavik /usr/local/bin/
 ```
 
-Builds are provided for macOS (amd64, arm64), Linux (amd64, arm64) and Windows
-(amd64). They are statically linked and have no runtime dependencies.
+Builds are provided for:
+
+| Platform | Architectures |
+| --- | --- |
+| macOS | arm64 (Apple silicon), amd64 (Intel) |
+| Linux | amd64, arm64, arm (32-bit) |
+| Windows | amd64, arm64 |
+
+They are statically linked and have no runtime dependencies.
 
 **Verify what you downloaded.** Every release ships a `checksums.txt`:
 
