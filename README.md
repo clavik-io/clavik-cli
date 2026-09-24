@@ -11,40 +11,50 @@ here.
 
 ## Install
 
-Download the binary for your platform from the
-[latest release](https://github.com/clavik-io/clavik-cli/releases/latest).
-
 ```bash
-# macOS (Apple silicon)
-curl -sSL -o clavik https://github.com/clavik-io/clavik-cli/releases/latest/download/clavik_v1.0.0_darwin_arm64
-chmod +x clavik && sudo mv clavik /usr/local/bin/
+brew install clavik-io/tap/clavik
 ```
 
-```bash
-# Linux (x86-64)
-curl -sSL -o clavik https://github.com/clavik-io/clavik-cli/releases/latest/download/clavik_v1.0.0_linux_amd64
-chmod +x clavik && sudo mv clavik /usr/local/bin/
-```
+Homebrew works on macOS and Linux. Upgrade with `brew upgrade clavik`.
 
-Builds are provided for:
+> Installed with Homebrew before v1.0.1? Earlier releases were a formula, which
+> has been replaced by a cask. Switch once:
+> `brew uninstall clavik && brew install --cask clavik-io/tap/clavik`
 
-| Platform | Architectures |
+To download instead, pick the archive for your platform from the
+[latest release](https://github.com/clavik-io/clavik-cli/releases/latest):
+
+| Platform | Archive |
 | --- | --- |
-| macOS | arm64 (Apple silicon), amd64 (Intel) |
-| Linux | amd64, arm64, arm (32-bit) |
-| Windows | amd64, arm64 |
+| macOS, Apple silicon | `clavik_<version>_darwin_arm64.tar.gz` |
+| macOS, Intel | `clavik_<version>_darwin_amd64.tar.gz` |
+| Linux, x86-64 | `clavik_<version>_linux_amd64.tar.gz` |
+| Linux, arm64 | `clavik_<version>_linux_arm64.tar.gz` |
+| Linux, 32-bit ARM (ARMv7) | `clavik_<version>_linux_armv7.tar.gz` |
+| Windows, x86-64 | `clavik_<version>_windows_amd64.zip` |
+| Windows, arm64 | `clavik_<version>_windows_arm64.zip` |
 
-They are statically linked and have no runtime dependencies.
-
-**Verify what you downloaded.** Every release ships a `checksums.txt`:
+For example, on Linux x86-64:
 
 ```bash
-curl -sSL -O https://github.com/clavik-io/clavik-cli/releases/latest/download/checksums.txt
+VERSION=$(curl -sSL https://api.github.com/repos/clavik-io/clavik-cli/releases/latest \
+  | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4)
+curl -sSLO "https://github.com/clavik-io/clavik-cli/releases/download/${VERSION}/clavik_${VERSION}_linux_amd64.tar.gz"
+curl -sSLO "https://github.com/clavik-io/clavik-cli/releases/download/${VERSION}/checksums.txt"
 shasum -a 256 -c checksums.txt --ignore-missing
+tar -xzf "clavik_${VERSION}_linux_amd64.tar.gz" clavik && sudo mv clavik /usr/local/bin/
 ```
 
-On macOS, Gatekeeper will quarantine an unsigned download. Clear it with
-`xattr -d com.apple.quarantine /usr/local/bin/clavik`.
+Each archive holds the `clavik` binary and the license. The binaries are
+statically linked and have no runtime dependencies. The ARMv7 build does not run
+on ARMv6 boards (Raspberry Pi 1, Pi Zero W).
+
+On macOS, a binary downloaded through a browser is quarantined by Gatekeeper,
+because it is not signed or notarized. Clear it with
+`xattr -d com.apple.quarantine /usr/local/bin/clavik`. Downloads made with
+`curl`, and installs through Homebrew, are not affected.
+
+v1.0.0 predates this layout and shipped bare binaries rather than archives.
 
 ## Configure
 
@@ -54,7 +64,7 @@ defaults.
 
 ```bash
 clavik config set --profile prod \
-  --endpoint https://api.clavik.io \
+  --endpoint https://portal.clavik.de \
   --tenant my-account \
   --api-key vault_...
 
@@ -73,6 +83,10 @@ Three authentication modes are supported:
 Every setting has an environment variable — `CLAVIK_ENDPOINT`,
 `CLAVIK_TENANT_KEY`, `CLAVIK_API_KEY`, `CLAVIK_PROFILE` and so on — which is
 usually what you want in CI, so no credential is written to disk.
+
+`--endpoint` is the host of your Clavik deployment — `https://portal.clavik.de`
+for the hosted service. `https://portal.clavik.de/api/v1` also works;
+`https://portal.clavik.de/api` does not.
 
 Profiles live in `~/.clavik/config.yaml`, written at mode `0600`. Credentials
 are stored in plaintext, as with the AWS CLI; the file's permissions are what
