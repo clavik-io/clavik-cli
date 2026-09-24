@@ -18,8 +18,9 @@ brew install clavik-io/tap/clavik
 Homebrew works on macOS and Linux. Upgrade with `brew upgrade clavik`.
 
 > Installed with Homebrew before v1.0.1? Earlier releases were a formula, which
-> has been replaced by a cask. Switch once:
-> `brew uninstall clavik && brew install --cask clavik-io/tap/clavik`
+> has been replaced by a cask. Switch once — `--formula` is needed, because
+> without it Homebrew resolves the name to the new cask and refuses to load it:
+> `brew uninstall --formula clavik && brew install --cask clavik-io/tap/clavik`
 
 To download instead, pick the archive for your platform from the
 [latest release](https://github.com/clavik-io/clavik-cli/releases/latest):
