@@ -38,12 +38,13 @@ To download instead, pick the archive for your platform from the
 For example, on Linux x86-64:
 
 ```bash
-VERSION=$(curl -sSL https://api.github.com/repos/clavik-io/clavik-cli/releases/latest \
-  | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4)
-curl -sSLO "https://github.com/clavik-io/clavik-cli/releases/download/${VERSION}/clavik_${VERSION}_linux_amd64.tar.gz"
-curl -sSLO "https://github.com/clavik-io/clavik-cli/releases/download/${VERSION}/checksums.txt"
-shasum -a 256 -c checksums.txt --ignore-missing
-tar -xzf "clavik_${VERSION}_linux_amd64.tar.gz" clavik && sudo mv clavik /usr/local/bin/
+VERSION=$(curl -fsSL https://api.github.com/repos/clavik-io/clavik-cli/releases/latest \
+  | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4) &&
+curl -fsSLO "https://github.com/clavik-io/clavik-cli/releases/download/${VERSION}/clavik_${VERSION}_linux_amd64.tar.gz" &&
+curl -fsSLO "https://github.com/clavik-io/clavik-cli/releases/download/${VERSION}/checksums.txt" &&
+sha256sum -c checksums.txt --ignore-missing &&
+tar -xzf "clavik_${VERSION}_linux_amd64.tar.gz" clavik &&
+sudo mv clavik /usr/local/bin/
 ```
 
 Each archive holds the `clavik` binary and the license. The binaries are
